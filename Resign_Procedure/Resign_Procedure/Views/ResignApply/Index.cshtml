@@ -1,1 +1,448 @@
+﻿@model Resign_Procedure.Models.ViewModel_Resign_Apply
+@*@string.Format("{0}:{1}:{2}", Model.Seniority?.Value.Days / 365, Model.Seniority?.Value.Days % 365 / 30, Model.Seniority?.Value.Days % 365 % 30)*@
 
+@{
+    ViewBag.Title = "Index";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+}
+
+@*===========Head navbar==============*@
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="index.html"><img src='~/Content/images/CYPCC.png' width='100'></a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Index">誠毅紙器股份有限公司</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ResignApply/Index">離職申請</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ResignProcedure/Index">離職程序</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="LogOut.html">登出</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+@*======content===============*@
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-12'>
+
+            @using (Html.BeginForm("Apply", "ResignApply", FormMethod.Post, new { id = "form_apply" }))
+            {
+                @*=========content========*@
+                <table class="Employ_Info">
+
+                    @*=======基本資料=======*@
+                    <tr>
+                        <th>姓名</th>
+                        <th>
+                            @*                            <input type="text" id="employ_name" name="employ_name" value=@Model.Resign_Employ_Info.Name />*@
+                            @*@Html.TextBoxFor(model => model.Resign_Employ_Info.Name, new { @class = "form-control" })*@
+                            <div class="input_name">
+                                @*@Html.TextBoxFor(model => model.Resign_Employ_Info.Name, new { @class = "form-control", Name = "Employ_Name" })*@
+                                @Html.TextBoxFor(model => model.Resign_Employ_Info.Name, new { @class = "form-control" })
+                                @*<button type="button" class="btn btn-primary submit" onclick="SearchByName(this)">搜尋</button>*@
+                                @*<button type="button" class="btn btn-primary submit">搜尋</button>*@
+                            </div>
+                        </th>
+
+
+                        @*test 多國語言*@
+                        @*<th>員工編號</th>*@
+                        <th>@Resources.Resource.E_ID</th>
+                        <th>
+                            @*<input type="text" id="employ_id" value=@Model.Resign_Employ_Info.Employ_ID />*@
+                            @Html.TextBoxFor(model => model.Resign_Employ_Info.Employ_ID, new { @class = "form-control" })
+                        </th>
+                        <th>部門</th>
+                        <th>
+
+                            @*====non bootstrap=====*@
+                            @*<input type="text" id="employ_department" />*@
+                            @*<select name="example" id="employ_department" class="fullFill" onchange = "SelectedIndexChanged(this)">
+                                    @foreach (var orgznization in Model.Orgznization_Infos)
+                                    {
+                                        <option value=@orgznization.Organization>@orgznization.Organization</option>
+                                    }
+                                </select>*@
+
+                            <div class="input-group">
+                                @*<input type="text" class="form-control" aria-label="Text input with dropdown button">*@
+                                @Html.TextBoxFor(model => model.Resign_Employ_Organization.Department, new { @placeholder = "選擇部門", @class = "form-control text-box", id = "dropdown_department" })
+                                <button type="button" class="btn btn-primary dropdown-toggle" id="e_department" data-bs-toggle="dropdown" onchange="SelectedIndexChanged(this)"></button>
+                                <div class="dropdown-menu" id="dropdown-department" aria-labelledby="dropdownMenuButton">
+                                    @{
+                                        List<string> added_departments = new List<string>();
+                                    }
+                                    @foreach (var orgznization in Model.Orgznization_Infos)
+                                    {
+                                        if (!added_departments.Contains(@orgznization.Department))
+                                        {
+                                            <a class="dropdown-item" href="#">@orgznization.Department</a>
+                                            added_departments.Add(@orgznization.Department);
+                                        }
+                                    }
+                                </div>
+                            </div>
+                    </tr>
+
+                    <tr>
+                        <th>到職日期</th>
+                        <th>
+                            @*<input type="text" id="onboard_date" class="fullFill" />*@
+                            @*<input id="onboard_date" data-provide="datepicker">*@
+                            @*<div id="onboard_date" data-provide="datepicker">
+                                    <input type="text" class="form-control">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>*@
+                            <div class="input-group date" id="onboard_date" data-provide="datepicker">
+                                @*<input type="text" id="onboard_date_txt" class="form-control">*@
+                                @Html.TextBoxFor(model => model.Resign_Employ_Info.Onboard_Date, "{0:yyyy/MM/dd}", new { @class = "form-control", id = "onboard_date_txt" })
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </th>
+                        <th>性別</th>
+                        <th>
+                            <div class="child_ctrl">
+                                @if ("Male" == Model.Resign_Employ_Info.Gender?.Trim())
+                                {
+                                    <input type="radio" id="male" name="gender" value="Male" checked disabled>
+                                    <label for="male" style="padding-right:10px">Male</label>
+
+                                    <input type="radio" id="female" name="gender" value="Female" disabled>
+                                    <label for="female">Female</label>
+                                }
+                                else
+                                {
+                                    <input type="radio" id="male" name="gender" value="Male" disabled>
+                                    <label for="male" style="padding-right:10px">Male</label>
+
+                                    <input type="radio" id="female" name="gender" value="Female" checked disabled>
+                                    <label for="female">Female</label>
+                                }
+                            </div>
+                        </th>
+                        <th>職務</th>
+                        <th>
+                            @*<select name="example" id="employ_title" class="fullFill">
+                                    @foreach (var org_titles in Model.Selected_Organization_Titles)
+                                    {
+                                        <option value=@org_titles.Title>@org_titles.Title</option>
+                                    }
+                                </select>*@
+
+                            @*begin*@
+
+                            <div class="input-group">
+                                @*<input type="text" class="form-control" aria-label="Text input with dropdown button">*@
+                                @Html.TextBoxFor(model => model.Resign_Employ_Organization.Title, new { @placeholder = "選擇職稱", @class = "form-control text-box" })
+                                <button type="button" class="btn btn-primary dropdown-toggle" id="e_department" data-bs-toggle="dropdown" onchange="SelectedIndexChanged(this)"></button>
+                                <div class="dropdown-menu" id="dropdown-title" aria-labelledby="dropdownMenuButton">
+                                    @foreach (var org_titles in Model.Selected_Organization_Titles)
+                                    {
+                                        <a class="dropdown-item" href="#">@org_titles.Title</a>
+                                    }
+                                </div>
+                            </div>
+                            @*end*@
+
+
+                            @*<div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" id="e_title" data-bs-toggle="dropdown" onchange="SelectedIndexChanged(this)">
+                                        職務->
+                                        @foreach (var organization in Model.Selected_Organization_Titles)
+                                        {
+                                            @: AA
+                                            @: @organization.Title
+                                        }
+                                        BB
+                                    </button>
+
+                                    <div class="dropdown-menu" id="dropdown-title" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">aaa</a>
+                                        <a class="dropdown-item" href="#">Fix orgznization Title1</a>
+                                        @foreach (var organization in Model.Selected_Organization_Titles)
+                                        {
+                                            <a class="dropdown-item" href="#">@organization.Title</a>
+                                            <a class="dropdown-item" href="#">Fix organization.TitleItem</a>
+                                        }
+                                        <a class="dropdown-item" href="#">Fix orgznization Title2</a>
+
+                                        @if (null != Model.Selected_Organization_Titles)
+                                        {
+                                            if (Model.Selected_Organization_Titles.Count > 0)
+                                            {
+                                                foreach (var orgznization in Model.Selected_Organization_Titles)
+                                                {
+                                                    <a class="dropdown-item" href="#">orgznization.Title</a>
+                                                    <a class="dropdown-item" href="#">@orgznization.Department</a>
+                                                }
+                                                <a class="dropdown-item" href="#">Fix orgznization.Department</a>
+                                            }
+                                        }
+                                    </div>
+                                </div>*@
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>離職日期</td>
+                        <th>
+                            @*<input type="text" id="test" style="width:100%; height: 100%; border: none" />*@
+                            @*<input type="text" id="resign_date" class="fullFill" />*@
+                            @*<input id="resign_date" data-provide="datepicker">*@
+                            <div class="input-group date" id="resign_date" data-provide="datepicker">
+                                @*<input type="text" id="resign_date_txt" class="form-control">*@
+                                @*@Html.TextBoxFor(model => model.Resing_Procedure_Header.Resign_Date, "{0:yyyy/MM/dd}", new { @class = "form-control", id = "resign_date_txt" })*@
+                                @Html.TextBoxFor(model => model.Resing_Procedure_Header.Resign_Date, "{0:yyyy/MM/dd}", new { @class = "form-control", id = "resign_date_txt" })
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                                @*<button type="submit" class="btn btn-primary submit" formaction="/ResignApply/Assign_Resign_Date">Cal</button>*@
+                            </div>
+                        </th>
+                        <td>年資</td>
+                        <th>
+                            @*<input type="text" id="seniority" value=@Model.Seniority.Value.Days / 365 />*@
+                            @if (null != ViewBag.Seniority)
+                            {
+                                //if (Model.Seniority.Value.Days > 0)
+                                if (ViewBag.Seniority.Days > 0)
+                                {
+                                    @Html.Raw(String.Format(" {0} 年 {1} 月 {2} 日 ", ViewBag.Seniority.Days / 365, ViewBag.Seniority.Days % 365 / 30, ViewBag.Seniority.Days % 365 % 30))
+                                }
+                            }
+                        </th>
+                        <td>手機</td>
+                        <th>
+                            @if (null == Model.Resign_Employ_Info
+|| null == @Model.Resign_Employ_Info.Telephone)
+                            {
+                            }
+                            else if (@Model.Resign_Employ_Info.Telephone.Length > 0)
+                            {
+                                @:@Model.Resign_Employ_Info.Telephone
+                            }
+                            else
+                            {
+                                @:選擇職務4
+                            }
+                        </th>
+                    </tr>
+                </table>
+
+                <button type="submit" class="btn btn-primary submit" formaction="/ResignApply/SearchByName">搜尋</button>
+                <input type="hidden" name="search_name" value="NameABC" />
+
+                @*<button type="button" class="btn btn-primary submit" onclick="SearchByName(this)">搜尋</button>*@
+
+                <br />
+
+                //Pass value by model
+                <input type="submit" class="btn btn-success submit" formaction="/ResignApply/Apply" value="提交" style="float:right" />
+
+
+            }
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.Err_Message))
+{
+    <label class="Err_Message">@ViewBag.Err_Message</label>
+    <script type="text/javascript">
+        alert( "@ViewBag.Err_Message" );
+    </script>
+}
+
+<script>
+
+        function SelectedIndexChanged(comboBox) {
+
+            alert(comboBox.value);
+            //Form post
+            //$(document).
+            //document.demoForm.submit();
+        }
+
+        function SearchByName(editobx_name) {
+
+            alert($('Employ_Name').value);
+            alert($('#Resign_Employ_Info_Name').value);
+            alert($('#Resign_Employ_Info_Name').text);
+            alert(editobx_name.value);
+
+        }
+
+        $('input_name').on('click', function (e) {
+
+            alert(this.value);
+            console.log(this.value,
+                this.options[this.selectedIndex].value,
+                $(this).find("option:selected").val());
+        });
+
+        $('select').on('change', function (e) {
+
+            alert(this.value);
+            console.log(this.value,
+                this.options[this.selectedIndex].value,
+                $(this).find("option:selected").val());
+        });
+
+        $("#e_department").change(function () {
+            var selected = $('#e_department option:selected').val();
+            alert(selected);
+        });
+
+        function submitSearchByName() {
+            //$('#showAll').val('true');
+            $('#filterForm').submit();
+        }
+
+        // combobox 顯示選到部門
+        $(".dropdown-menu").on('click', 'li a', function () {
+            $(".btn:first-child").text($(this).text());
+            $(".btn:first-child").val($(this).text());
+
+            alert(this.value);
+
+
+            var url = '@Url.Action("Department_Select_Change", "ResignApply"
+                                @*, new { employ_name = "", employ_id = "", department_name = "" })'; // + this.text() + ' }) ';*@
+                  , new { employ_name = "", employ_id = "", department_name = "' + $(this).text() + '" })'; // + this.text() + ' }) ';
+    });
+
+    $(function () {
+
+        //===init datepicker===
+        $('#onboard_date').datepicker({
+            format: "yyyy/mm/dd",
+        });
+        $('#resign_date').datepicker({
+            format: "yyyy/mm/dd",
+        });
+
+        $('#onboard_date').datepicker().on('changeDate', function (ev) {
+            console.log($('#onboard_date').val());
+            alert(ev.date);
+        });
+
+        $('#resign_date').datepicker().on('changeDate', function (ev) {
+            console.log($('#resign_date').val());
+            alert(ev.date);
+
+            var onboard_date = document.getElementById("onboard_date_txt").value;
+            console.log(onboard_date);
+
+            var resign_date = document.getElementById('resign_date_txt').value;
+            console.log(resign_date);
+
+            var onboard_date_2 = new Date(document.getElementById('onboard_date_txt').value);
+            var resign_date_2 = new Date(document.getElementById('resign_date_txt').value);
+
+            var milli_secs = resign_date_2.getTime() - onboard_date_2.getTime();
+
+            // Convert the milli seconds to Days
+            var days = milli_secs / (1000 * 3600 * 24);
+
+
+            var str_onboard_date = onboard_date.toDate;
+            console.log(str_onboard_date);
+
+            var resign_date = document.getElementById('resign_date_txt').value;
+            console.log(resign_date);
+
+            //var duration = ev.date - $('document').val();
+            var duration = resign_date - onboard_date;
+            alert(duration);
+
+            $("#form_apply").submit();
+
+            $('#input-date')
+                .datepicker()
+                .on('changeDate', function (e) {
+                    $('#formID').submit();
+                });
+
+            var url = '@Url.Action("Assign_Resign_Date", "ResignApply"
+                                @*, new { employ_name = "", employ_id = "", department_name = "" })'; // + this.text() + ' }) ';*@
+                  , new { employ_name = "", employ_id = "", department_name = "' + $(this).text() + '" })'; // + this.text() + ' }) ';
+
+        });
+    })
+
+
+    //$("#date-daily").val('0000-00-00');
+    //$("#date-daily").change(function () {
+
+    //    console.log($('#resign_date').val());
+    //    alert(this.value);
+    //});
+
+    $("#resign_date").change( function () {
+
+        console.log($('#resign_date').val());
+        alert(this.value);
+    });
+
+
+    //for bootstrap version
+    $("#dropdown-department").on('click', 'a', function () {
+        console.log("ToBeUpdate " + this + " : " + $(".btn:first-child").text);
+
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
+        $(this).parents(".input-group").find('.text-box').val($(this).text());
+
+        //dropdown_department
+
+        alert(this.text + "===");
+
+        let this_text = $(this).text();
+        console.log($(this).text());
+        console.log("update done " + this + ":" + $(".btn:first-child") + "-->" + this_text);
+        //let action_str = ', new { employ_name = "", employ_id = "", department_name = "' +  this_text + '" })'; // + this.text() + ' }) ';
+        //console.log(action_str);
+
+        $("#form_apply").submit();
+    });
+
+    $("#dropdown-title").on('click', 'a', function () {
+    console.log("ToBeUpdate " + this + " : " + $(".btn:first-child").text);
+
+    //$(".btn:first-child").text($(this).text());
+    //$(".btn:first-child").val($(this).text());
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
+    alert(this.text + "===");
+
+    let this_text = $(this).text();
+    console.log($(this).text());
+    console.log("update done " + this + ":" + $(".btn:first-child") + "-->" + this_text);
+    });
+
+    function alert_message(message) {
+        alert(message);
+    }
+
+</script>
