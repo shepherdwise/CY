@@ -1,1 +1,56 @@
+﻿@model Resign_Procedure.Models.Employ_Info
 
+@{
+    ViewBag.Title = "登入";
+}
+
+@*======content===============*@
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "Form_Login" }))
+{
+    <div class='container'>
+        <div class='row'>
+            <div class='col-md-12'>
+
+                @*<div class="bg-image"
+                        style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/76.jpg');
+            height: 100vh">
+                </div>*@
+
+                <div class="panel panel-primary Panel-Content">
+
+                    <div class="Panel-Heading">
+                        <h2>登入</h2>
+                    </div>
+
+                    <div class="input-group Center-Block Login_Session">
+
+                        <label id="Error_Message">@ViewBag.ErrorMessage</label>
+                    </div>
+
+                    <div class="input-group Center-Block Login_Session">
+
+                        @*<div style="width: 100px">*@
+                        <span class="input-group-addon">
+                            <img src="~/Content/images/person.svg">
+                        </span>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control Login_Session", placeholder = "輸入帳號", id = "Login_Account_Text" })
+                        @*<input type="text" class="form-control" placeholder="輸入帳號" id="Login-Account-Text" />*@
+                        @*</div>*@
+                    </div>
+
+                    <div class="input-group Center-Block Login_Session">
+                        <span class="input-group-addon">
+                            <img src="~/Content/images/key.svg">
+                        </span>
+                        @*<input type="text" class="form-control" placeholder="輸入密碼" id="Login-Password-Text" />*@
+                        @Html.PasswordFor(model => model.Pwd, new { @class = "form-control Login_Session", placeholder = "輸入密碼", id = "Login_Password_Text" })
+                    </div>
+
+                    <br />
+
+                    <button type="submit" class="btn btn-primary submit" formaction="/Home/Login">登入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
