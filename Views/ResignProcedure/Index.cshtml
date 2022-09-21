@@ -1,1 +1,227 @@
+﻿@model Resign_Procedure.Models.ViewModel_Resign_Procedure_Items
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<section class="header">
+
+    @*===========Head navbar==============*@
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="index.html"><img src='~/Content/images/CYPCC.png' width='100'></a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/Index">誠毅紙器股份有限公司</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ResignApply/Index">離職申請</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ResignProcedure/Index">離職程序</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="LogOut.html">登出</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+
+
+<p>
+    @*<input type="text" id="anyid" />
+        Click the text:<input type="text" id="test" />*@
+</p>
+
+@*=========content========*@
+<table class="Employ_Info">
+
+    @*=======基本資料=======*@
+    <tr>
+        <th>姓名</th>
+        <th>
+            <input type="text" id="employ_name" value=@Model.Resign_Employ_Info.Name />
+        </th>
+        <th>員工編號</th>
+        <th>
+            <input type="text" id="employ_id" value=@Model.Resign_Employ_Info.Employ_ID />
+        </th>
+        <th>部門</th>
+        <th>
+            <input type="text" id="employ_department" value="@Model.Resign_Employ_Organization.Department" disabled />
+            @*<input type="text" id="employ_department" />*@
+            @*<select name="example" id="employ_department" class="fullFill">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="-">Other</option>
+                </select>*@
+
+            @*<select name="example" id="employ_department" class="fullFill">
+                    @foreach (var orgznization in Model.Orgznization_Infos)
+                    {
+                        <option value=@orgznization.Organization>@orgznization.Organization</option>
+                    }
+                </select>*@
+    </tr>
+
+    <tr>
+        <th>到職日期</th>
+        <th>
+            <input type="text" id="onboard_date" class="fullFill" />
+        </th>
+        <th>性別</th>
+        <th>
+            <div class="child_ctrl">
+
+                @if ("Male" == Model.Resign_Employ_Info.Gender?.Trim())
+                {
+                    <input type="radio" id="male" name="gender" value="Male" checked disabled>
+                    <label for="male" style="padding-right:10px">Male</label>
+
+                    <input type="radio" id="female" name="gender" value="Female" disabled>
+                    <label for="female">Female</label>
+                }
+                else
+                {
+                    <input type="radio" id="male" name="gender" value="Male" disabled>
+                    <label for="male" style="padding-right:10px">Male</label>
+
+                    <input type="radio" id="female" name="gender" value="Female" checked disabled>
+                    <label for="female">Female</label>
+                }
+            </div>
+        </th>
+        <th>職務</th>
+        <th>
+            <input type="text" id="employ_department" value="@Model.Resign_Employ_Organization.Title" disabled />
+        </th>
+    </tr>
+    <tr>
+        <td>離職日期</td>
+        <th>
+            @*<input type="text" id="test" style="width:100%; height: 100%; border: none" />*@
+            <input type="text" id="resign_date" class="fullFill" />
+        </th>
+        <td>年資</td>
+        <th></th>
+        <td>手機</td>
+        <th>
+            <input type="text" id="employ_department" value=@Model.Resign_Employ_Info.Telephone disabled />
+        </th>
+    </tr>
+</table>
+
+<button type="submit" class="btn btn-primary submit" formaction="/ResignProcedure/Find_Resign_Employ">搜尋</button>
+
+<table name="procedure_items" id="procedure_items">
+
+    <tr>
+        <td>承辦單位</td>
+        <td>辦理事項內容</td>
+        <td>辦理狀況</td>
+        <td>承辦員簽章</td>
+        <td>備註</td>
+    </tr>
+
+    @*=======辦理狀況=======*@
+    @*@foreach (var procedure_item in Model)*@
+    @*using (var underTaking_Item in model.UnderTaking_Items ) {*@
+    @*@Html.LabelFor(procedure_item => procedure_item.UnderTaking_Info.UnderTaking_Organization);*@
+
+    @{
+        int item_id = 1;
+    }
+
+    @foreach (var underTaking_Item in Model.UnderTaking_Items)
+    {
+        <tr>
+            <td>@underTaking_Item.UnderTaking_Organization</td>
+            <td>@underTaking_Item.UnderTaking_Description</td>
+            <td>
+                @*<input type="radio" id="underTaking_Item{{@item_id}}-1" name="underTaking_Item{{@item_id}}" value="已" onclick="Item_Done(this, `@underTaking_Item.UnderTaking_Organization` )" checked>*@
+                <input type="radio" id="underTaking_Item{{@item_id}}-1" name="underTaking_Item{{@item_id}}" value="已" onclick="Item_Done(this, `@Json.Encode(@underTaking_Item)`  )" checked>
+                <label>已</label>
+                @*@Html.RadioButtonFor(m => m.UnderTaking_Items., "已")*@
+
+
+                <input type="radio" id="underTaking_Item{{@item_id}}-2" name="underTaking_Item{{@item_id}}" value="未" onclick="Item_Done(this, `@Json.Encode(@underTaking_Item)` )">
+                <label for="vehicle1">未</label>
+                <input type="radio" id="underTaking_Item{{@item_id}}-3" name="underTaking_Item{{@item_id}}" value="無" onclick="Item_Done(this, `@Json.Encode(@underTaking_Item)` )">
+                <label for="vehicle1">無</label>
+            </td>
+
+            <td></td>
+            <td></td>
+        </tr>
+
+        item_id++;
+    }
+</table>
+
+<section class="Footer">
+    <div class="view">
+        This is the footer
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="dialogModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialogA" title="Confirm Dialog" hidden="hidden" @*class=".no-close"*@>
+    <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the &apos;x&apos; icon.</p>
+</div>
+
+<script>
+
+    // init datepicker.
+    $("#resign_date").datepicker();
+    $("#onboard_date").datepicker();
+
+
+    //function Item_Done(radioBtn, underTaking_Item, underTaking_Item_obj) {
+    function Item_Done(radioBtn, underTaking_Item_obj) {
+
+        alert(radioBtn.value);
+
+        let underTaking_Item_obj_inst = JSON.parse(underTaking_Item_obj);
+        alert('Org:' + underTaking_Item_obj_inst.UnderTaking_Organization + ', description:' + underTaking_Item_obj_inst.UnderTaking_Description);
+
+
+        // Set up your modal, here with an empty set of options {}
+        //var myModal = new bootstrap.Modal(document.getElementById('dialogModal'), {});
+
+        //// Now open it
+        //myModal.show();
+
+        $('#dialogModal').modal('show');
+    }
+
+</script>
+
+@*@section Footer {
+        <div class="view">
+            This is the footer
+        </div>
+    }*@
 
