@@ -1,0 +1,49 @@
+﻿#Form_Login {
+
+    background: url('https://mdbootstrap.com/img/Photos/Others/images/76.jpg') no-repeat !important;
+}
+
+.Panel-Content {
+
+    width: 500px;
+    height: 300px;
+    background-color: #f8eeee;
+    margin: auto;
+    align-items: center;
+}
+
+.Panel-Heading {
+    font-size: 40px;
+    background-color: #00ffff;
+    background-position: center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    margin: auto;
+    align-items: center;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.Center-Block {
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Login_Session{
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+#Login_Account_Text,
+#Login_Password_Text {
+    width: 200px; /*max-content;*/
+}
+
+#Error_Message {
+    font-size: 20px;
+    color: #ff0000;
+}
